@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>غيابات الطلبة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1EEE4;
+    --paper-line:#d9d4c4;
+    --blueprint:#173350;
+    --blueprint-deep:#0F2436;
+    --ink:#1c2430;
+    --ink-soft:#5c6472;
+    --amber:#b9862c;
+    --card:#ffffff;
+    --border:#d7d2c2;
+    --neutral:#c8cdd3;
+    --green:#3f8d5d;
+    --green-bg:#e4f2e9;
+    --yellow:#c9741f;
+    --yellow-bg:#fdebd7;
+    --red:#b8402f;
+    --red-bg:#fbe6e2;
+    --darkgray:#3a3f47;
+    --darkgray-bg:#e2e3e6;
+    --shadow: 0 1px 2px rgba(15,36,54,.06), 0 6px 18px rgba(15,36,54,.06);
+  }
+  :root:not([data-theme="light"]) { }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#141a22;
+      --paper-line:#232b36;
+      --blueprint:#0f2436;
+      --blueprint-deep:#0a1620;
+      --ink:#e7e9ec;
+      --ink-soft:#9aa3b0;
+      --card:#1b222c;
+      --border:#2a3341;
+      --neutral:#333c48;
+      --green-bg:#173325;
+      --yellow-bg:#3a2a14;
+      --red-bg:#361c17;
+      --darkgray-bg:#252a31;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#141a22;
+    --paper-line:#232b36;
+    --blueprint:#0f2436;
+    --blueprint-deep:#0a1620;
+    --ink:#e7e9ec;
+    --ink-soft:#9aa3b0;
+    --card:#1b222c;
+    --border:#2a3341;
+    --neutral:#333c48;
+    --green-bg:#173325;
+    --yellow-bg:#3a2a14;
+    --red-bg:#361c17;
+    --darkgray-bg:#252a31;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0/100% 34px,
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px) 0 0/34px 100%,
+      var(--paper);
+    background-attachment:local;
+    color:var(--ink);
+    font-family:"IBM Plex Sans Arabic","Segoe UI",sans-serif;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    min-height:100%;
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:22px 18px 60px;}
+
+  /* Title block, styled like an architectural drawing stamp */
+  .titleblock{
+    background:var(--blueprint);
+    color:#eef3f7;
+    border-radius:6px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    margin-bottom:20px;
+  }
+  .titleblock-top{
+    display:flex;align-items:baseline;justify-content:space-between;
+    padding:20px 22px 14px;
+    border-bottom:1px solid rgba(255,255,255,.14);
+  }
+  .titleblock-top h1{
+    font-family:"Archivo",sans-serif;
+    font-weight:800;
+    font-size:26px;
+    margin:0;
+    letter-spacing:.2px;
+  }
+  .titleblock-sub{font-size:13px;color:#b9c6d3;}
+  .titleblock-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px;
+  }
+  .titleblock-grid div{
+    padding:10px 16px;
+    border-inline-start:1px solid rgba(255,255,255,.14);
+  }
+  .titleblock-grid div:first-child{border-inline-start:none;}
+  .titleblock-grid b{display:block;color:#8fa6ba;font-weight:500;font-size:10.5px;margin-bottom:3px;letter-spacing:.3px;}
+  .titleblock-grid span{color:#eef3f7;font-size:13px;}
+  @media (max-width:640px){
+    .titleblock-grid{grid-template-columns:repeat(2,1fr);}
+    .titleblock-grid div:nth-child(3){border-inline-start:none;}
+  }
+
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab-btn{
+    font-family:inherit;font-size:14px;font-weight:600;
+    padding:9px 16px;border-radius:999px;border:1px solid var(--border);
+    background:var(--card);color:var(--ink-soft);cursor:pointer;
+  }
+  .tab-btn.active{background:var(--blueprint);border-color:var(--blueprint);color:#fff;}
+
+  .panel{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    padding:20px;
+    margin-bottom:18px;
+  }
+  .panel h2{
+    font-family:"Archivo",sans-serif;font-size:17px;margin:0 0 4px;font-weight:700;
+  }
+  .panel p.hint{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12.5px;color:var(--ink-soft);margin-bottom:6px;font-weight:600;}
+  select,input[type=date],input[type=text]{
+    width:100%;padding:9px 11px;border-radius:7px;border:1px solid var(--border);
+    background:var(--paper);color:var(--ink);font-family:inherit;font-size:14px;
+  }
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:560px){.row2{grid-template-columns:1fr;}}
+
+  .session-block{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:12px;}
+  .session-block h3{margin:0 0 10px;font-size:14px;font-family:"Archivo",sans-serif;display:flex;justify-content:space-between;align-items:center;}
+  .session-block h3 small{color:var(--ink-soft);font-weight:500;font-family:"IBM Plex Mono",monospace;font-size:11.5px;}
+  .checklist{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:6px 10px;
+    max-height:260px;overflow-y:auto;padding-inline-end:4px;
+  }
+  @media (max-width:640px){.checklist{grid-template-columns:repeat(2,1fr);}}
+  .checklist label{
+    display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;
+    padding:4px 6px;border-radius:5px;
+  }
+  .checklist label:hover{background:var(--paper);}
+  .checklist input{accent-color:var(--red);}
+
+  .hours-list{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;
+    max-height:340px;overflow-y:auto;padding-inline-end:4px;
+  }
+  @media (max-width:560px){.hours-list{grid-template-columns:1fr;}}
+  .hours-row{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--paper);
+  }
+  .hours-row .hname{font-size:13px;}
+  .hours-row .hinput{
+    width:64px;padding:5px 7px;border-radius:5px;border:1px solid var(--border);
+    background:var(--card);color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:13px;text-align:center;
+  }
+
+  .btn{
+    font-family:inherit;font-weight:700;font-size:14px;
+    background:var(--amber);color:#2a1d05;border:none;border-radius:8px;
+    padding:11px 20px;cursor:pointer;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn.secondary{background:transparent;border:1px solid var(--border);color:var(--ink);font-weight:600;}
+  .status-msg{font-size:13px;margin-top:10px;color:var(--ink-soft);}
+  .status-msg.ok{color:var(--green);}
+  .status-msg.err{color:var(--red);}
+
+  .lookup{margin-bottom:18px;}
+  .lookup-card{
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    box-shadow:var(--shadow);padding:18px 20px;
+  }
+  .badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .badge{
+    flex:1;min-width:150px;border-radius:9px;padding:12px 14px;
+    border:1px solid var(--border);
+  }
+  .badge .name{font-size:12px;color:var(--ink-soft);margin-bottom:6px;font-weight:600;}
+  .badge .pct{font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:600;}
+  .badge .lvl{font-size:12px;margin-top:4px;font-weight:600;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{
+    text-align:start;padding:9px 10px;color:var(--ink-soft);font-weight:600;
+    font-size:11.5px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card);
+  }
+  tbody td{padding:8px 10px;border-bottom:1px solid var(--paper-line);}
+  tbody tr:hover{background:var(--paper);}
+  .pill{
+    display:inline-block;padding:2px 9px;border-radius:999px;font-family:"IBM Plex Mono",monospace;
+    font-size:12px;font-weight:600;
+  }
+  .table-wrap{overflow-x:auto;}
+  .search-box{margin-bottom:12px;}
+
+  footer{text-align:center;margin-top:30px;opacity:.55;font-size:10.5px;letter-spacing:.4px;font-family:"IBM Plex Mono",monospace;}
+
+  .locked-note{
+    display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-soft);
+    background:var(--paper);border:1px dashed var(--border);border-radius:8px;padding:10px 12px;margin-bottom:16px;
+  }
+
+  .print-only{display:none;}
+  @media print{
+    body *{visibility:hidden;}
+    .print-only, .print-only *{visibility:visible;}
+    .print-only{position:absolute;top:0;left:0;width:100%;display:block;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="titleblock">
+    <div class="titleblock-top">
+      <h1>غيابات الطلبة</h1>
+      <div class="titleblock-sub">قسم هندسة العمارة</div>
+    </div>
+    <div class="titleblock-grid">
+      <div><b>الجامعة</b><span>جامعة سامراء</span></div>
+      <div><b>المرحلة</b><span>الثالثة</span></div>
+      <div><b>العام الدراسي</b><span>2026 - 2027</span></div>
+      <div><b>عدد الطلبة</b><span id="tb-count">—</span></div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="app"></div>
+
+  <footer>POWERED BY MARIA</footer>
+</div>
+
+<div class="print-only" id="print-report"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+
+<script>
+(function(){
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDd8khuXLM8zne8FTq72v4E4ebnSeJPeg4",
+    authDomain: "attendance-samarra.firebaseapp.com",
+    databaseURL: "https://attendance-samarra-default-rtdb.firebaseio.com/",
+    projectId: "attendance-samarra",
+    storageBucket: "attendance-samarra.firebasestorage.app",
+    messagingSenderId: "158531690965",
+    appId: "1:158531690965:web:13cf5692ae76b3e8d55d5c"
+  };
+
+  let db = null;
+  let auth = null;
+  try{
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    auth = firebase.auth();
+  }catch(e){ console.error('Firebase init failed', e); db = null; }
+
+  const COURSES = [
+    { id:'design', name:'التصميم المعماري', sessions:[
+        { id:'s1', name:'المحاضرة الأولى', hours:6 },
+        { id:'s2', name:'المحاضرة الثانية', hours:4 }
+      ] },
+    { id:'threeds', name:'3ds Max', sessions:[
+        { id:'s1', name:'المحاضرة', hours:4 }
+      ] }
+  ];
+  const TOTAL_WEEKS = 15;
+  const totalHoursFor = (courseId) => {
+    const c = COURSES.find(c=>c.id===courseId);
+    return c.sessions.reduce((a,s)=>a+s.hours,0) * TOTAL_WEEKS;
+  };
+  const COMBINED_TOTAL = COURSES.reduce((a,c)=>a+totalHoursFor(c.id),0);
+
+  const STUDENTS = [
+    "آية باسم","احمد حسن","اسامة سعد","اسلام عمار","الحسن عدي","تقى وليد",
+    "حذيفة محمد","حسين حامد","حنين خضير","خاطر ياسر","زينب جمال","سارا طلال","سبأ نافع",
+    "سما محمد","صفا عدي","طيبة إسماعيل","عبد الملك","علي احمد عبد المنعم",
+    "علي واثق","عمر حاضر","فاطمة بهاء","مازن حامد","محمد عمر","مصطفى حافظ",
+    "مصطفى محمد","ملاك غسان","مهند صباح","مهيب فاضل","ميس محمد عبد الزراق","هاجر حيدر","هيثم زهير",
+    "وليد قاسم"
+  ];
+
+  let DATA = { weeks: {} };
+  let selectedWeek = '1';
+  let dataLoaded = false;
+
+  document.getElementById('tb-count').textContent = STUDENTS.length;
+
+  // ---------- stats ----------
+  function weeklyHoursFor(courseId){
+    const c = COURSES.find(c=>c.id===courseId);
+    return c.sessions.reduce((a,s)=>a+s.hours,0);
+  }
+  function absentHours(student, courseId){
+    let hrs = 0;
+    Object.values(DATA.weeks).forEach(w=>{
+      const rec = w[courseId];
+      if(!rec) return;
+      const v = Number(rec[student]);
+      if(!isNaN(v)) hrs += v;
+    });
+    return hrs;
+  }
+  function pct(hrs, total){ return total>0 ? (hrs/total*100) : 0; }
+
+  function band(p){
+    if(p < 5)  return {key:'none',   label:'ضمن الحدود الطبيعية', color:'var(--ink-soft)', bg:'transparent', tint:'transparent'};
+    if(p < 8)  return {key:'green',  label:'تنبيه أول',            color:'var(--green)',    bg:'var(--green-bg)', tint:'rgba(63,141,93,.22)'};
+    if(p < 10) return {key:'yellow', label:'تنبيه ثانٍ',           color:'var(--yellow)',   bg:'var(--yellow-bg)', tint:'rgba(240,150,50,.28)'};
+    if(p < 15) return {key:'red',    label:'إنذار',                color:'var(--red)',      bg:'var(--red-bg)', tint:'rgba(184,64,47,.25)'};
+    return       {key:'gray',  label:'مفصول بالغياب',        color:'var(--darkgray)', bg:'var(--darkgray-bg)', tint:'rgba(58,63,71,.35)'};
+  }
+
+  function statsFor(student){
+    const out = {};
+    let absSum = 0;
+    COURSES.forEach(c=>{
+      const h = absentHours(student, c.id);
+      absSum += h;
+      out[c.id] = { hours:h, total: totalHoursFor(c.id), pct: pct(h, totalHoursFor(c.id)) };
+    });
+    out.overall = { hours: absSum, total: COMBINED_TOTAL, pct: pct(absSum, COMBINED_TOTAL) };
+    return out;
+  }
+
+  // ---------- admin access (Firebase Authentication) ----------
+  let canEdit = false;
+  let showLogin = false;
+  let activeTab = 'lookup';
+
+  function logout(){
+    if(auth) auth.signOut();
+  }
+
+  function renderLogin(){
+    const wrap = document.createElement('div');
+    const panel = document.createElement('div');
+    panel.className = 'panel';
+    panel.style.maxWidth = '420px';
+    panel.innerHTML = '<h2>دخول المحاضر</h2><p class="hint">سجّل الدخول بحسابك لتتمكن من تسجيل الغيابات.</p>' +
+      '<div class="field"><label>البريد الإلكتروني</label><input type="text" id="login-email" dir="ltr" autocomplete="username"></div>' +
+      '<div class="field"><label>كلمة المرور</label><input type="password" id="login-pass" dir="ltr" autocomplete="current-password" style="width:100%;padding:9px 11px;border-radius:7px;border:1px solid var(--border);background:var(--paper);color:var(--ink);font-size:14px;"></div>' +
+      '<div style="display:flex;gap:10px;"><button class="btn" id="login-btn">دخول</button><button class="btn secondary" id="login-cancel">إلغاء</button></div>' +
+      '<div class="status-msg" id="login-msg"></div>';
+    const doLogin = ()=>{
+      const msg = panel.querySelector('#login-msg');
+      if(!auth){ msg.textContent = 'تعذر الاتصال بخدمة الدخول.'; msg.className = 'status-msg err'; return; }
+      const email = panel.querySelector('#login-email').value.trim();
+      const pass = panel.querySelector('#login-pass').value;
+      msg.textContent = 'جارٍ تسجيل الدخول…'; msg.className = 'status-msg';
+      auth.signInWithEmailAndPassword(email, pass).catch(()=>{
+        msg.textContent = 'البريد أو كلمة المرور غير صحيحة.';
+        msg.className = 'status-msg err';
+      });
+    };
+    panel.querySelector('#login-btn').onclick = doLogin;
+    panel.querySelector('#login-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+    panel.querySelector('#login-cancel').onclick = ()=>{ showLogin = false; render(); };
+    wrap.appendChild(panel);
+    return wrap;
+  }
+
+  function saveWeek(w, rec){
+    if(!db){
+      setStatus('تعذر الاتصال بقاعدة البيانات — تأكد من الإنترنت وحاول من جديد.', 'err');
+      return;
+    }
+    setStatus('جارٍ الحفظ…', '');
+    db.ref('weeks/'+w).set(rec).then(()=>{
+      setStatus('تم الحفظ — التحديث يظهر للطلبة فوراً.', 'ok');
+    }).catch(err=>{
+      setStatus('تعذر الحفظ: '+err.message, 'err');
+    });
+  }
+
+  function setStatus(msg, cls){
+    const el = document.getElementById('status-msg');
+    if(!el) return;
+    el.textContent = msg;
+    el.className = 'status-msg ' + (cls||'');
+  }
+
+  function buildPrintReport(){
+    const today = new Date().toLocaleDateString('ar-EG');
+    let html = '<div style="font-family:Arial, sans-serif; padding:24px; direction:rtl;">';
+    html += '<h1 style="text-align:center;margin-bottom:4px;">تقرير غيابات الطلبة</h1>';
+    html += '<p style="text-align:center;margin:0 0 4px;">قسم هندسة العمارة — جامعة سامراء — المرحلة الثالثة — العام الدراسي 2026-2027</p>';
+    html += '<p style="text-align:center;margin:0 0 18px;font-size:12px;color:#555;">تاريخ إصدار التقرير: '+today+'</p>';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:13px;" border="1" cellpadding="6">';
+    html += '<thead><tr style="background:#173350;color:#fff;"><th>#</th><th>الاسم</th>' +
+      COURSES.map(c=>'<th>'+c.name+'</th>').join('') + '</tr></thead><tbody>';
+    STUDENTS.forEach((s,i)=>{
+      const st = statsFor(s);
+      html += '<tr><td style="text-align:center;">'+(i+1)+'</td><td>'+s+'</td>' +
+        COURSES.map(c=>'<td style="text-align:center;background:'+band(st[c.id].pct).tint+';-webkit-print-color-adjust:exact;print-color-adjust:exact;">'+st[c.id].pct.toFixed(1)+'%</td>').join('') +
+        '</tr>';
+    });
+    html += '</tbody></table>' +
+      '<p style="margin-top:24px;font-size:11px;color:#777;">النسب محسوبة من إجمالي ساعات الفصل الدراسي (15 أسبوعاً). حد الفصل بالغياب: 15%.</p>' +
+      '</div>';
+    return html;
+  }
+
+  function printReport(){
+    if(!canEdit) return;
+    document.getElementById('print-report').innerHTML = buildPrintReport();
+    window.print();
+  }
+
+  // ---------- rendering ----------
+  function render(){
+    const tabsEl = document.getElementById('tabs');
+    tabsEl.innerHTML = '';
+    const tabDefs = [{id:'lookup', label:'استعلام ونتائج الطلبة'}];
+    if(canEdit) tabDefs.push({id:'admin', label:'تسجيل الغيابات'});
+    tabDefs.forEach(t=>{
+      const b = document.createElement('button');
+      b.className = 'tab-btn' + (activeTab===t.id ? ' active' : '');
+      b.textContent = t.label;
+      b.onclick = ()=>{ activeTab = t.id; render(); };
+      tabsEl.appendChild(b);
+    });
+    const accessBtn = document.createElement('button');
+    accessBtn.className = 'tab-btn';
+    accessBtn.style.marginInlineStart = 'auto';
+    accessBtn.textContent = canEdit ? '🔓 تسجيل خروج المحاضر' : '🔒 دخول المحاضر';
+    accessBtn.onclick = canEdit ? logout : ()=>{ showLogin = true; render(); };
+    tabsEl.appendChild(accessBtn);
+
+    const app = document.getElementById('app');
+    app.innerHTML = '';
+    if(!canEdit && showLogin){
+      app.appendChild(renderLogin());
+    } else if(activeTab === 'admin' && canEdit){
+      app.appendChild(renderAdmin());
+    } else {
+      app.appendChild(renderLookup());
+    }
+  }
+
+  function pillHtml(p){
+    const b = band(p);
+    return '<span class="pill" style="color:'+b.color+';background:'+b.bg+'">'+p.toFixed(1)+'%'+'</span>';
+  }
+
+  function renderLookup(){
+    const wrap = document.createElement('div');
+
+    if(!canEdit){
+      const note = document.createElement('div');
+      note.className = 'locked-note';
+      note.innerHTML = '👁️‍🗨️ عرض للطلبة — يمكنك الاطلاع على نتيجتك فقط دون إمكانية التعديل.';
+      wrap.appendChild(note);
+    }
+
+    // personal lookup
+    const card = document.createElement('div');
+    card.className = 'lookup-card';
+    card.innerHTML = '<div class="field" style="margin-bottom:0;"><label>ابحث عن اسمك</label>' +
+      '<select id="student-select"><option value="">— اختر الاسم —</option>' +
+      STUDENTS.map(s=>'<option value="'+s+'">'+s+'</option>').join('') +
+      '</select></div><div id="badge-out"></div>';
+    wrap.appendChild(card);
+
+    const badgeOut = () => card.querySelector('#badge-out');
+    card.querySelector('#student-select').addEventListener('change', (e)=>{
+      const s = e.target.value;
+      if(!s){ badgeOut().innerHTML=''; return; }
+      const st = statsFor(s);
+      let html = '<div class="badge-row">' +
+        COURSES.map(c=>{
+          const b = band(st[c.id].pct);
+          return '<div class="badge" style="background:'+b.bg+';border-color:'+b.bg+'">'+
+            '<div class="name">'+c.name+'</div>'+
+            '<div class="pct" style="color:'+b.color+'">'+st[c.id].pct.toFixed(1)+'%</div>'+
+            '<div class="lvl" style="color:'+b.color+'">'+b.label+'</div></div>';
+        }).join('') +
+        (function(){
+          const b = band(st.overall.pct);
+          return '<div class="badge" style="background:'+b.bg+';border-color:'+b.bg+'">'+
+            '<div class="name">النسبة الكلية</div>'+
+            '<div class="pct" style="color:'+b.color+'">'+st.overall.pct.toFixed(1)+'%</div>'+
+            '<div class="lvl" style="color:'+b.color+'">'+b.label+'</div></div>';
+        })() +
+        '</div>';
+
+      const weekNums = Object.keys(DATA.weeks)
+        .filter(w => DATA.weeks[w] && DATA.weeks[w].date)
+        .sort((a,b)=>Number(a)-Number(b));
+      html += '<div class="table-wrap" style="margin-top:18px;"><table><thead><tr>' +
+        '<th>الأسبوع</th><th>التاريخ</th>' +
+        COURSES.map(c=>'<th>'+c.name+' (ساعات غياب)</th>').join('') +
+        '</tr></thead><tbody>';
+      if(weekNums.length === 0){
+        html += '<tr><td colspan="'+(2+COURSES.length)+'" style="color:var(--ink-soft);">لا توجد أسابيع مسجّلة بعد.</td></tr>';
+      } else {
+        weekNums.forEach(w=>{
+          const rec = DATA.weeks[w];
+          html += '<tr><td>الأسبوع '+w+'</td><td>'+(rec.date||'—')+'</td>' +
+            COURSES.map(c=>{
+              const v = (rec[c.id] && rec[c.id][s]) ? rec[c.id][s] : 0;
+              return '<td>'+(v>0 ? ('<span class="pill" style="color:var(--red);background:var(--red-bg)">'+v+'</span>') : '0') +'</td>';
+            }).join('') +
+            '</tr>';
+        });
+      }
+      html += '</tbody></table></div>';
+
+      badgeOut().innerHTML = html;
+    });
+
+    // full table
+    const panel = document.createElement('div');
+    panel.className = 'panel';
+    panel.innerHTML = '<h2>سجل جميع الطلبة</h2><p class="hint">النسب محسوبة من إجمالي ساعات الفصل الدراسي (15 أسبوعاً).</p>';
+    if(canEdit){
+      const printBtn = document.createElement('button');
+      printBtn.className = 'btn secondary';
+      printBtn.style.marginBottom = '12px';
+      printBtn.textContent = '🖨️ طباعة / تصدير التقرير PDF';
+      printBtn.onclick = printReport;
+      panel.appendChild(printBtn);
+    }
+    const search = document.createElement('input');
+    search.type = 'text';
+    search.placeholder = 'تصفية بالاسم…';
+    search.className = 'search-box';
+    panel.appendChild(search);
+
+    const tableWrap = document.createElement('div');
+    tableWrap.className = 'table-wrap';
+    panel.appendChild(tableWrap);
+
+    function drawTable(filter){
+      const rows = STUDENTS.filter(s => !filter || s.includes(filter));
+      let html = '<table><thead><tr><th>#</th><th>الاسم</th>' +
+        COURSES.map(c=>'<th>'+c.name+'</th>').join('') +
+        '</tr></thead><tbody>';
+      rows.forEach((s, i)=>{
+        const st = statsFor(s);
+        html += '<tr><td style="color:var(--ink-soft);font-family:\'IBM Plex Mono\',monospace;">'+(STUDENTS.indexOf(s)+1)+'</td><td>'+s+'</td>' +
+          COURSES.map(c=>'<td style="background:'+band(st[c.id].pct).tint+'">'+pillHtml(st[c.id].pct)+'</td>').join('') +
+          '</tr>';
+      });
+      html += '</tbody></table>';
+      tableWrap.innerHTML = html;
+    }
+    drawTable('');
+    search.addEventListener('input', ()=>drawTable(search.value.trim()));
+
+    wrap.appendChild(panel);
+
+    // legend
+    const legend = document.createElement('div');
+    legend.className = 'panel';
+    legend.innerHTML = '<h2>مفتاح الألوان</h2><div class="badge-row">' +
+      [{p:2,label:'أقل من 5%'},{p:6,label:'5% – أقل من 8%'},{p:9,label:'8% – أقل من 10%'},{p:12,label:'10% – أقل من 15%'},{p:16,label:'15% فأكثر'}]
+      .map(x=>{ const b=band(x.p); return '<div class="badge" style="background:'+b.bg+';border-color:'+b.bg+';min-width:120px;">'+
+        '<div class="name">'+x.label+'</div><div class="lvl" style="color:'+b.color+';font-size:13px;">'+b.label+'</div></div>'; }).join('') +
+      '</div>';
+    wrap.appendChild(legend);
+
+    return wrap;
+  }
+
+  function weekOptions(selected){
+    let out = '';
+    for(let i=1;i<=TOTAL_WEEKS;i++){
+      out += '<option value="'+i+'"'+(String(i)===String(selected)?' selected':'')+'>الأسبوع '+i+'</option>';
+    }
+    return out;
+  }
+
+  function renderAdmin(){
+    const wrap = document.createElement('div');
+    const panel = document.createElement('div');
+    panel.className = 'panel';
+    panel.innerHTML = '<h2>تسجيل غيابات أسبوع</h2><p class="hint">اختر الأسبوع، أدخل التاريخ، وأدخل عدد ساعات الغياب لكل طالب بكل مادة (تُترك 0 لمن حضر كامل الوقت)، ثم احفظ.</p>';
+
+    const fieldRow = document.createElement('div');
+    fieldRow.className = 'row2';
+    fieldRow.innerHTML =
+      '<div class="field"><label>الأسبوع</label><select id="week-select">'+weekOptions(selectedWeek)+'</select></div>'+
+      '<div class="field"><label>التاريخ</label><input type="date" id="week-date"></div>';
+    panel.appendChild(fieldRow);
+
+    const sessionsHost = document.createElement('div');
+    panel.appendChild(sessionsHost);
+
+    const btnRow = document.createElement('div');
+    btnRow.style.display = 'flex';
+    btnRow.style.gap = '10px';
+    btnRow.style.marginTop = '6px';
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'btn';
+    saveBtn.textContent = 'حفظ';
+    btnRow.appendChild(saveBtn);
+    panel.appendChild(btnRow);
+
+    const note = document.createElement('div');
+    note.className = 'locked-note';
+    note.style.marginTop = '12px';
+    note.innerHTML = 'الحفظ مباشر بقاعدة بيانات حية — ما تحتاج تنزيل أو رفع أي ملف، الطلبة يشوفون النتيجة فوراً بعد الحفظ.';
+    panel.appendChild(note);
+
+    const statusMsg = document.createElement('div');
+    statusMsg.id = 'status-msg';
+    statusMsg.className = 'status-msg';
+    panel.appendChild(statusMsg);
+
+    function loadWeek(w){
+      const rec = DATA.weeks[w] || {};
+      panel.querySelector('#week-date').value = rec.date || '';
+      sessionsHost.innerHTML = '';
+      COURSES.forEach(c=>{
+        const maxH = weeklyHoursFor(c.id);
+        const courseRec = rec[c.id] || {};
+        const block = document.createElement('div');
+        block.className = 'session-block';
+        block.dataset.course = c.id;
+        block.innerHTML = '<h3>'+c.name+' <small>حد أقصى '+maxH+' ساعات أسبوعياً</small></h3>' +
+          '<div class="hours-list">' +
+          STUDENTS.map(st=>{
+            const v = (courseRec[st] !== undefined && courseRec[st] !== null) ? courseRec[st] : '';
+            return '<div class="hours-row"><span class="hname">'+st+'</span>'+
+              '<input type="number" class="hinput" data-student="'+st+'" min="0" max="'+maxH+'" step="0.5" placeholder="0" value="'+v+'"></div>';
+          }).join('') +
+          '</div>';
+        sessionsHost.appendChild(block);
+      });
+    }
+
+    loadWeek(selectedWeek);
+
+    panel.querySelector('#week-select').addEventListener('change', (e)=>{
+      selectedWeek = e.target.value;
+      loadWeek(selectedWeek);
+    });
+
+    saveBtn.addEventListener('click', ()=>{
+      const w = panel.querySelector('#week-select').value;
+      const date = panel.querySelector('#week-date').value;
+      const rec = { date: date };
+      panel.querySelectorAll('.session-block').forEach(block=>{
+        const cid = block.dataset.course;
+        const maxH = weeklyHoursFor(cid);
+        rec[cid] = {};
+        block.querySelectorAll('.hinput').forEach(inp=>{
+          let v = parseFloat(inp.value);
+          if(isNaN(v) || v < 0) v = 0;
+          if(v > maxH) v = maxH;
+          if(v > 0) rec[cid][inp.dataset.student] = v;
+        });
+      });
+      saveWeek(w, rec);
+    });
+
+    wrap.appendChild(panel);
+    return wrap;
+  }
+
+  if(auth){
+    auth.onAuthStateChanged((user)=>{
+      canEdit = !!user;
+      if(user){ showLogin = false; activeTab = 'admin'; }
+      else if(activeTab === 'admin'){ activeTab = 'lookup'; }
+      render();
+    });
+  }
+
+  if(db){
+    db.ref('weeks').on('value', (snapshot)=>{
+      DATA.weeks = snapshot.val() || {};
+      dataLoaded = true;
+      render();
+    }, (err)=>{
+      console.error('Firebase read failed', err);
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
